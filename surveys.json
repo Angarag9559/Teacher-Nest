@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "teacherId": "1",
+    "text": "hello world\n",
+    "createdAt": "2025-09-29T13:35:56.605Z"
+  },
+  {
+    "teacherId": "6",
+    "text": "Helllo boldoo",
+    "createdAt": "2025-09-29T13:36:39.465Z"
+  },
+  {
+    "teacherId": "1",
+    "text": "Bi utasnaas bichij baina",
+    "createdAt": "2025-09-29T13:48:16.086Z"
+  },
+  {
+    "teacherId": "9",
+    "text": "Good boy",
+    "createdAt": "2025-09-29T13:51:22.823Z"
+  },
+  {
+    "teacherId": "9",
+    "text": "mars man",
+    "createdAt": "2025-09-29T13:56:19.259Z"
+  }
+]
