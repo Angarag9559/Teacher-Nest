@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Teachers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <header class="bg-purple-800 text-white py-6 shadow flex justify-center sticky top-0 z-50">
+      <h1 class="text-3xl font-bold">Nest Education</h1>
+  </header>
+
+  <section class="text-center py-12">
+    <h2 class="text-4xl font-extrabold text-gray-800">Манай Багш Нар</h2>
+    <p class="text-gray-600 mt-2">Онцгой, Туршлагатай, Хүсэл тэмүүлэлтэй Багш нар</p>
+  </section>
+
+  <main class="container mx-auto px-6 pb-16">
+    <div id="teachersGrid" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </main>
+
+  <script>
+    async function loadTeachers() {
+      const res = await fetch("/teachers");
+      const teachers = await res.json();
+
+      const grid = document.getElementById("teachersGrid");
+      grid.innerHTML = "";
+
+      teachers.forEach(t => {
+        grid.innerHTML += `
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition">
+            <img src="${t.img}" alt="${t.name}" class="w-full h-56 object-cover">
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-gray-800">${t.name}</h3>
+              <p class="text-gray-600 mt-1">${t.subject}</p>
+              <button 
+                data-id="${t.id}" 
+                class="mt-4 bg-purple-800 text-white px-5 py-2 rounded-lg hover:bg-purple-700 transition survey-btn">
+                Санал Бичих
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      document.querySelectorAll(".survey-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const teacherId = btn.getAttribute("data-id");
+          window.location.href = `survey.html?teacher=${teacherId}`;
+        });
+      });
+    }
+
+    loadTeachers();
+  </script>
+</body>
+</html>
