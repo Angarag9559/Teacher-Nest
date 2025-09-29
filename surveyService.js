@@ -3,11 +3,14 @@ const { Octokit } = require("@octokit/rest");
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const owner = process.env.GITHUB_USER;
 const repo = process.env.GITHUB_REPO;
-const path = "surveys.json"; // adjust if your file is in a folder, e.g., "data/surveys.json"
+const path = "surveys.json"; // adjust if in a folder
 
 // Fetch all surveys from GitHub
 async function getSurveys() {
   try {
+    console.log("DEBUG: Fetching surveys from GitHub");
+    console.log(`Owner: ${owner}, Repo: ${repo}, Path: ${path}`);
+
     const { data: fileData } = await octokit.repos.getContent({
       owner,
       repo,
@@ -16,9 +19,10 @@ async function getSurveys() {
 
     let surveys = JSON.parse(Buffer.from(fileData.content, "base64").toString());
     if (!Array.isArray(surveys)) surveys = [];
+    console.log(`DEBUG: Found ${surveys.length} survey(s)`);
     return surveys;
   } catch (err) {
-    console.error("Error fetching surveys:", err.message);
+    console.error("ERROR: Fetching surveys failed:", err.message);
     return [];
   }
 }
@@ -26,6 +30,9 @@ async function getSurveys() {
 // Save a new survey to GitHub
 async function saveSurvey(newSurvey) {
   try {
+    console.log("DEBUG: Saving new survey to GitHub");
+    console.log("Survey content:", newSurvey);
+
     // Get current file content
     const { data: fileData } = await octokit.repos.getContent({
       owner,
@@ -37,7 +44,9 @@ async function saveSurvey(newSurvey) {
     if (!Array.isArray(surveys)) surveys = [];
     surveys.push(newSurvey);
 
-    // Update file in GitHub
+    console.log(`DEBUG: Total surveys after adding: ${surveys.length}`);
+
+    // Update the file in GitHub
     await octokit.repos.createOrUpdateFileContents({
       owner,
       repo,
@@ -47,9 +56,10 @@ async function saveSurvey(newSurvey) {
       sha: fileData.sha,
     });
 
+    console.log("DEBUG: Survey saved successfully!");
     return newSurvey;
   } catch (err) {
-    console.error("Error saving survey:", err.message);
+    console.error("ERROR: Saving survey failed:", err.message);
     throw err;
   }
 }
