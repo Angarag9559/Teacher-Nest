@@ -6,5 +6,6 @@
   { "id": "5", "name": "М.Батхишиг", "subject": "Химийн багш — БУЗАН", "img": "teacher5.jpg" },
   { "id": "6", "name": "С.Болдбаатар", "subject": "Физикийн багш — БУЗАН", "img": "teacher6.jpg" },
   { "id": "7", "name": "Lavenia", "subject": "Англи хэлний багш — НҮЗАН ахлагч", "img": "teacher7.jpg" },
-  { "id": "8", "name": "Д.Мөнхбаатар", "subject": "Англи хэлний багш — НҮЗАН", "img": "teacher8.jpg" }
+  { "id": "8", "name": "Д.Мөнхбаатар", "subject": "Англи хэлний багш — НҮЗАН", "img": "teacher8.jpg" },
+  { "id": "9", "name": "Angaragnaran", "subject": "Англи хэлний багш — НҮЗАН", "img": "teacher9.jpg" }
 ]
