@@ -5,20 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Талархал Бичих</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="bg-purple-800 text-white py-6 shadow-lg flex justify-center sticky top-0 z-50">
-    <h1 class="text-3xl font-bold tracking-wide">Талархал Бичих</h1>
-  </header>
+  <header class="bg-purple-800 text-white py-6 shadow-lg flex items-center sticky top-0 z-50 px-6">
+  <!-- Back Button -->
+  <button onclick="window.location.href='list.html'" class="text-white text-lg hover:underline focus:outline-none absolute left-6">
+    <i class="fa fa-arrow-left mr-2"></i>
+    <span class="hidden md:inline">Буцах</span>
+  </button>
+
+  <!-- Centered Title -->
+  <h1 class="text-3xl font-bold tracking-wide mx-auto">Талархал Бичих</h1>
+</header>
 
   <!-- Main Content -->
   <main class="container mx-auto px-6 py-16 flex flex-col md:flex-row gap-12">
 
     <!-- Teacher Info Card -->
     <div class="w-full md:w-1/3 bg-white rounded-2xl shadow-xl overflow-hidden p-6 flex flex-col items-center">
-      <img id="teacherImg" src="" alt="Teacher" class="w-full h-64 object-cover rounded-xl mb-4 shadow-md"  style="object-position: 0% 30%;">>
+      <img id="teacherImg" src="" alt="Teacher" class="w-full h-64 object-cover rounded-xl mb-4 shadow-md" style="object-position: 0% 30%;">
       <h2 id="teacherName" class="text-3xl font-bold text-gray-800 mb-2 text-center"></h2>
       <p id="teacherSubject" class="text-gray-600 text-lg text-center"></p>
     </div>
