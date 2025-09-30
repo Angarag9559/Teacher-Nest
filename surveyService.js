@@ -28,38 +28,65 @@ async function getSurveys() {
 }
 
 // Save a new survey to GitHub
+// surveyService.js
 async function saveSurvey(newSurvey) {
   try {
     console.log("DEBUG: Saving new survey to GitHub");
     console.log("Survey content:", newSurvey);
 
-    // Get current file content
-    const { data: fileData } = await octokit.repos.getContent({
-      owner,
-      repo,
-      path,
-    });
+    // Helper to fetch current surveys + sha
+    const fetchFile = async () => {
+      const { data: fileData } = await octokit.repos.getContent({
+        owner,
+        repo,
+        path,
+      });
+      const surveys = JSON.parse(Buffer.from(fileData.content, "base64").toString() || "[]");
+      return { surveys: Array.isArray(surveys) ? surveys : [], sha: fileData.sha };
+    };
 
-    let surveys = JSON.parse(Buffer.from(fileData.content, "base64").toString());
-    if (!Array.isArray(surveys)) surveys = [];
+    // First fetch
+    let { surveys, sha } = await fetchFile();
     surveys.push(newSurvey);
 
-    console.log(`DEBUG: Total surveys after adding: ${surveys.length}`);
+    const content = Buffer.from(JSON.stringify(surveys, null, 2)).toString("base64");
 
-    // Update the file in GitHub
-    await octokit.repos.createOrUpdateFileContents({
-      owner,
-      repo,
-      path,
-      message: "Add new survey",
-      content: Buffer.from(JSON.stringify(surveys, null, 2)).toString("base64"),
-      sha: fileData.sha,
-    });
+    try {
+      await octokit.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path,
+        message: "Add new survey",
+        content,
+        sha,
+      });
+      console.log("DEBUG: Survey saved successfully!");
+      return newSurvey;
+    } catch (err) {
+      if (err.status === 409) {
+        console.warn("WARN: Conflict detected, refetching file...");
+        // Fetch again to get new sha and append again
+        let { surveys: freshSurveys, sha: freshSha } = await fetchFile();
+        freshSurveys.push(newSurvey);
 
-    console.log("DEBUG: Survey saved successfully!");
-    return newSurvey;
+        const freshContent = Buffer.from(JSON.stringify(freshSurveys, null, 2)).toString("base64");
+
+        await octokit.repos.createOrUpdateFileContents({
+          owner,
+          repo,
+          path,
+          message: "Add new survey (retry)",
+          content: freshContent,
+          sha: freshSha,
+        });
+        console.log("DEBUG: Survey saved successfully after retry!");
+        return newSurvey;
+      }
+      console.error("ERROR: Saving survey failed:", err.message);
+      throw err;
+    }
   } catch (err) {
-    console.error("ERROR: Saving survey failed:", err.message);
+    console.error("ERROR: saveSurvey failed:", err.message);
     throw err;
   }
 }
