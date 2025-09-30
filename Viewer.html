@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Surveys Viewer — grouped by teacherId</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto p-6">
+    <header class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Surveys Viewer</h1>
+      <p class="text-sm text-gray-600">It will try several server locations; if that fails, use the file upload below.</p>
+    </header>
+
+    <div class="flex gap-4 mb-6">
+      <button id="btnTryFetch" class="px-4 py-2 bg-purple-700 text-white rounded-lg shadow">Load from server (try common paths)</button>
+
+      <label class="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow">
+        <span class="text-sm text-gray-700">Or upload JSON</span>
+        <input id="fileInput" type="file" accept=".json,application/json" class="hidden">
+      </label>
+
+      <button id="btnDownloadGrouped" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow ml-auto" disabled>Download grouped JSON</button>
+    </div>
+
+    <div id="status" class="mb-4 text-sm text-gray-600"></div>
+
+    <main id="surveyContainer" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></main>
+  </div>
+
+<script>
+(async function () {
+  const statusEl = document.getElementById('status');
+  const container = document.getElementById('surveyContainer');
+  const fileInput = document.getElementById('fileInput');
+  const btnTryFetch = document.getElementById('btnTryFetch');
+  const btnDownload = document.getElementById('btnDownloadGrouped');
+
+  // Common paths to try (you can add more)
+  const tryPaths = [
+    './surveys.json',
+    '../surveys.json',
+    '/surveys.json',
+    './data/surveys.json',
+    '../data/surveys.json'
+  ];
+
+  function setStatus(msg, isError = false) {
+    statusEl.textContent = msg;
+    statusEl.className = isError ? 'mb-4 text-sm text-red-600' : 'mb-4 text-sm text-gray-600';
+  }
+
+  async function tryFetchPaths(paths) {
+    for (const p of paths) {
+      try {
+        setStatus(`Trying ${p} ...`);
+        const res = await fetch(p, {cache: "no-store"});
+        if (!res.ok) {
+          console.warn('not ok', p, res.status);
+          continue;
+        }
+        const json = await res.json();
+        setStatus(`Loaded ${p}`);
+        return json;
+      } catch (err) {
+        console.warn('fetch failed for', p, err);
+        // continue to next path
+      }
+    }
+    throw new Error('All fetch attempts failed');
+  }
+
+  // File upload fallback
+  fileInput.addEventListener('change', (ev) => {
+    const file = ev.target.files && ev.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const json = JSON.parse(e.target.result);
+        setStatus(`Loaded ${file.name} via file upload`);
+        handleData(json);
+      } catch (err) {
+        setStatus('Invalid JSON file.', true);
+        console.error(err);
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  btnTryFetch.addEventListener('click', async () => {
+    try {
+      const data = await tryFetchPaths(tryPaths);
+      handleData(data);
+    } catch (err) {
+      // Common cause: you're opening index.html via file:// (fetch blocked) or path not served by server
+      setStatus('Could not fetch surveys.json from common paths. If you are opening this file via file:// use the "upload" option, or run a local server (e.g. `python -m http.server`).', true);
+      console.error(err);
+    }
+  });
+
+  // Utility: dedupe, group, sort, render
+  function handleData(raw) {
+    container.innerHTML = '';
+    btnDownload.disabled = true;
+
+    if (!Array.isArray(raw)) {
+      setStatus('JSON root is not an array — expected an array of survey objects.', true);
+      return;
+    }
+
+    // Basic validation & normalization
+    const normalized = raw.map((it, idx) => ({
+      teacherId: it.teacherId ?? it.teacherID ?? String(it.teacherId ?? 'unknown'),
+      text: (it.text ?? '').toString(),
+      createdAt: it.createdAt ?? it.created_at ?? null,
+      __rawIndex: idx
+    }));
+
+    // Deduplicate exact same (teacherId + text + createdAt). Keeps the first occurrence.
+    const seen = new Set();
+    const filtered = [];
+    for (const item of normalized) {
+      const key = `${item.teacherId}||${item.text.trim()}||${item.createdAt ?? ''}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      filtered.push(item);
+    }
+
+    if (filtered.length === 0) {
+      setStatus('No valid survey entries found after parsing/deduplication.', true);
+      return;
+    }
+
+    // Group by teacherId
+    const grouped = filtered.reduce((acc, it) => {
+      acc[it.teacherId] = acc[it.teacherId] || [];
+      acc[it.teacherId].push(it);
+      return acc;
+    }, {});
+
+    // Sort teacher groups by numeric teacherId (if possible) else lexicographic
+    const teacherIds = Object.keys(grouped).sort((a,b) => {
+      const na = Number(a), nb = Number(b);
+      if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
+      return a.localeCompare(b);
+    });
+
+    // Sort messages in each group by createdAt (newest first). If createdAt missing, keep later.
+    for (const id of teacherIds) {
+      grouped[id].sort((a, b) => {
+        const da = a.createdAt ? new Date(a.createdAt) : new Date(0);
+        const db = b.createdAt ? new Date(b.createdAt) : new Date(0);
+        return db - da;
+      });
+    }
+
+    // Render
+    for (const id of teacherIds) {
+      const group = grouped[id];
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-2xl shadow p-5 flex flex-col';
+
+      // header
+      const header = document.createElement('div');
+      header.className = 'flex items-baseline justify-between mb-3';
+      header.innerHTML = `<div>
+        <div class="text-sm text-gray-500">Teacher ID</div>
+        <div class="text-lg font-semibold text-purple-800">#${id}</div>
+      </div>
+      <div class="text-right text-sm text-gray-500">
+        <div>${group.length} message${group.length>1?'s':''}</div>
+        ${group[0].createdAt ? `<div class="text-xs text-gray-400">latest: ${formatDate(group[0].createdAt)}</div>` : ''}
+      </div>`;
+      card.appendChild(header);
+
+      // list
+      const ul = document.createElement('ul');
+      ul.className = 'space-y-3';
+      for (const msg of group) {
+        const li = document.createElement('li');
+        li.className = 'p-3 bg-gray-50 rounded-lg border border-gray-100';
+        const time = msg.createdAt ? `<div class="text-xs text-gray-400 mb-1">${formatDate(msg.createdAt)}</div>` : '';
+        li.innerHTML = `${time}<div class="text-sm text-gray-800 whitespace-pre-wrap">${escapeHtml(msg.text)}</div>`;
+        ul.appendChild(li);
+      }
+      card.appendChild(ul);
+      container.appendChild(card);
+    }
+
+    setStatus(`Showing ${filtered.length} entries grouped across ${teacherIds.length} teacher(s).`);
+    // prepare grouped download object
+    const exportObj = teacherIds.reduce((acc,id) => {
+      acc[id] = grouped[id].map(({teacherId, text, createdAt}) => ({teacherId, text, createdAt}));
+      return acc;
+    }, {});
+    btnDownload.disabled = false;
+    btnDownload.onclick = () => downloadJSON(exportObj, 'surveys_grouped.json');
+  }
+
+  // format createdAt in Asia/Ulaanbaatar timezone
+  function formatDate(d) {
+    try {
+      const date = new Date(d);
+      if (isNaN(date)) return d;
+      return date.toLocaleString(undefined, { timeZone: 'Asia/Ulaanbaatar', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    } catch (e) {
+      return d;
+    }
+  }
+
+  function escapeHtml(s) {
+    return s
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;');
+  }
+
+  function downloadJSON(obj, filename) {
+    const blob = new Blob([JSON.stringify(obj, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // If you want automatic attempt when page loads uncomment:
+  // tryFetchPaths(tryPaths).then(handleData).catch(() => setStatus('Auto-fetch failed; click "Load from server" or upload the file.', true));
+
+})();
+</script>
+</body>
+</html>
