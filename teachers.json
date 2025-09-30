@@ -18,12 +18,12 @@
   { "id": "17", "name": "Тэмүжин", "subject": "МТ хөгжүүлэгч — МТ-ийн ЗАН", "img": "img/teacher17.png" },
   { "id": "18", "name": "Мөнх-Оргил", "subject": "МТ-ийн багш — МТ-ийн ЗАН", "img": "img/teacher18.png" },
   { "id": "19", "name": "Цэрэнлхагва", "subject": "МТ-ийн багш — МТ-ийн ЗАН", "img": "img/teacher19.png" },
-  { "id": "20", "name": "Анхбаяр", "subject": "МТ-ийн багш — МТ-ийн ЗАН", "img": "img/teacher20.png" },
-  { "id": "21", "name": "Энхтөр", "subject": "Кибер аюулгүй байдлын багш", "img": "img/teacher21.png" },
-  { "id": "22", "name": "Батцэцэг", "subject": "МТ-ийн багш", "img": "img/teacher22.png" },
-  { "id": "23", "name": "Эрдэнэцэцэг", "subject": "Биеийн тамирын багш", "img": "img/teacher23.png" },
-  { "id": "24", "name": "Отгонхишиг", "subject": "Биологийн багш", "img": "img/teacher24.png" },
-  { "id": "25", "name": "Ганхүлэг", "subject": "Аж ахуйн албаны менежер", "img": "img/teacher25.png" },
+  { "id": "20", "name": "Анхбаяр", "subject": "МТ-ийн багш — МТ-ийн ЗАН", "img": "img/user.png" },
+  { "id": "21", "name": "Энхтөр", "subject": "Кибер аюулгүй байдлын багш", "img": "img/user.png" },
+  { "id": "22", "name": "Батцэцэг", "subject": "МТ-ийн багш", "img": "img/user.png" },
+  { "id": "23", "name": "Эрдэнэцэцэг", "subject": "Биеийн тамирын багш", "img": "img/user.png" },
+  { "id": "24", "name": "Отгонхишиг", "subject": "Биологийн багш", "img": "img/user.png" },
+  { "id": "25", "name": "Ганхүлэг", "subject": "Аж ахуйн албаны менежер", "img": "img/teacher25.jpg" },
   { "id": "26", "name": "Мэнд-Амар", "subject": "Эмч", "img": "img/teacher26.png" },
   { "id": "27", "name": "Гэрэлтуяа", "subject": "Сэтгэл зүйч", "img": "img/teacher27.png" }
 ]
