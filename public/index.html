@@ -5,57 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Celebrate Teacher's Day</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<style>
-    /* Tailwind doesn't support background opacity directly, so we use a pseudo-element */
+  <link rel="icon" type="image/png" href="mainImg/logo.png">
+  <style>
     .bg-opacity-low::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('mainImg/bg\ doodle.jpeg');
-      background-repeat: repeat;
-      background-size: 100%;
-      opacity: 0.4; /* Adjust opacity here */
-      z-index: -1; /* Make sure it's behind the content */
+      inset: 0;
+      background-image: url('mainImg/bg doodle.jpeg');
+      background-repeat: no-repeat;
+      background-size: cover;  /* make bg scale 16:9 nicely */
+      background-position: center;
+      opacity: 0.35; 
+      z-index: -1;
     }
   </style>
+</head>
 
-<body class="bg-[#fab050] flex items-center justify-center min-h-screen bg-opacity-low">
+<body class="relative bg-[#fab050] flex items-center justify-center min-h-screen bg-opacity-low">
   <div class="bg-white shadow-xl rounded-lg w-full max-w-6xl m-4">
     <!-- Header with Logo -->
-    <div class="flex justify-between items-center px-12 pt-6">
+    <div class="flex justify-between items-center px-6 sm:px-12 pt-6">
       <div class="flex items-center gap-4">
-        <!-- Logo placeholder -->
-        <img src="mainImg/logo.png" alt="Logo" class="w-16 h-16 object-contain rounded-full">
-        <div class="text-3xl font-bold text-black">
+        <img src="mainImg/logo.png" alt="Logo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-full">
+        <div class="text-2xl sm:text-3xl font-bold text-black">
           <span class="text-purple-800">Nest</span> Education
         </div>
       </div>
     </div>
 
     <!-- Main Content -->
-    <div class="flex flex-col md:flex-row items-center justify-between px-12 py-16 gap-12">
+    <div class="flex flex-col md:flex-row items-center justify-between px-6 sm:px-12 py-10 sm:py-16 gap-10 sm:gap-12">
       <!-- Text -->
-      <div class="md:flex-1">
-        <h1 class="text-5xl md:text-6xl font-extrabold text-black">Багш нартаа</h1>
-        <h2 class="text-4xl md:text-5xl font-semibold text-gray-800 mt-4">баярын мэнд хүргэе.</h2>
-        <p class="text-gray-500 mt-6 text-lg md:text-xl">
+      <div class="md:flex-1 text-center md:text-left">
+        <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black">Багш нартаа</h1>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-semibold text-gray-800 mt-4">баярын мэнд хүргэе.</h2>
+        <p class="text-gray-500 mt-6 text-lg sm:text-xl">
           Сурагч Хамт Олноос нь
         </p>
         <a href="list.html">
-          <button class="mt-8 bg-purple-800 text-white text-lg md:text-xl font-semibold px-10 py-5 rounded-full shadow hover:bg-purple-700 hover:shadow-xl transition">
+          <button class="mt-8 bg-purple-800 text-white text-base sm:text-lg md:text-xl font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow hover:bg-purple-700 hover:shadow-xl transition">
             Талархал Бичих
           </button>
         </a>
       </div>
 
+
       <!-- Image -->
       <div class="md:flex-1 flex justify-center">
-        <img src="mainImg/teacher.png" alt="Teacher Illustration" class="w-full max-w-md md:max-w-xl h-auto rounded-lg">
+        <img src="mainImg/teacher.png" alt="Teacher Illustration" class="w-full max-w-xs sm:max-w-md md:max-w-xl h-auto rounded-lg">
       </div>
     </div>
   </div>
