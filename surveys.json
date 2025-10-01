@@ -608,5 +608,10 @@
     "teacherId": "18",
     "text": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Хамгийн царайлаг, авьяаслаг хичээлээ ойлгомжтой заадаг багш шүү❤️\");\n    }\n}",
     "createdAt": "2025-10-01T05:32:21.932Z"
+  },
+  {
+    "teacherId": "17",
+    "text": "<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <title>Баярын мэнд хүргэе!!!</title>\r\n  </head>\r\n  <body>\r\n      <h1>Тэмүжин багшдаа багш нарын баярын мэнд хүргэе! </h1>\r\n       <h2>*11a Э.Чингүүн*</h2>\r\n  </body>\r\n</html>",
+    "createdAt": "2025-10-01T05:39:48.428Z"
   }
 ]
