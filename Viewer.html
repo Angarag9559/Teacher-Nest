@@ -156,6 +156,18 @@
       });
     }
 
+    // Further deduplicate within each group by identical text (case- and space-insensitive)
+    for (const id of teacherIds) {
+      const seenTexts = new Set();
+      grouped[id] = grouped[id].filter(item => {
+        const key = item.text.trim().toLowerCase();
+        if (seenTexts.has(key)) return false;
+        seenTexts.add(key);
+        return true;
+      });
+    }
+
+
     // Render
     for (const id of teacherIds) {
       const group = grouped[id];

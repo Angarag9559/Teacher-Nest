@@ -72,18 +72,37 @@
     loadTeacher();
 
     document.getElementById("submitSurvey").addEventListener("click", async () => {
+      const btn = document.getElementById("submitSurvey");
       const text = document.getElementById("surveyText").value;
-      if (!text) return alert("Санал бичнэ үү");
 
-      await fetch("/submit-survey", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teacherId, text })
-      });
+      if (!text.trim()) {
+        alert("Санал бичнэ үү");
+        return;
+      }
 
-      alert("Санал амжилттай илгээгдлээ!");
-      document.getElementById("surveyText").value = "";
+      // Disable the button to prevent multiple clicks
+      btn.disabled = true;
+      btn.textContent = "Илгээж байна...";
+
+      try {
+        await fetch("/submit-survey", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ teacherId, text })
+        });
+
+        alert("Санал амжилттай илгээгдлээ!");
+        document.getElementById("surveyText").value = "";
+      } catch (err) {
+        alert("Алдаа гарлаа. Дахин оролдоно уу.");
+        console.error(err);
+      } finally {
+        // Re-enable the button (optional — or keep it disabled)
+        btn.disabled = false;
+        btn.textContent = "Илгээх";
+      }
     });
+
   </script>
 
 </body>
