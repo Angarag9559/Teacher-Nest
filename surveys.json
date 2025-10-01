@@ -603,5 +603,10 @@
     "teacherId": "10",
     "text": "Thanks for the homework time miss La",
     "createdAt": "2025-10-01T04:36:44.787Z"
+  },
+  {
+    "teacherId": "18",
+    "text": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Хамгийн царайлаг, авьяаслаг хичээлээ ойлгомжтой заадаг багш шүү❤️\");\n    }\n}",
+    "createdAt": "2025-10-01T05:32:21.932Z"
   }
 ]
