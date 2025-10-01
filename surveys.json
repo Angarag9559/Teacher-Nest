@@ -538,5 +538,10 @@
     "teacherId": "4",
     "text": "Thank you my dear teacher ",
     "createdAt": "2025-10-01T02:56:25.363Z"
+  },
+  {
+    "teacherId": "24",
+    "text": "Улсын сургуулийн сурагчнартайгаа зайл",
+    "createdAt": "2025-10-01T03:06:09.706Z"
   }
 ]
